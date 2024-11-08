@@ -31,6 +31,7 @@ pipeline {
                     || true
                 '''
                 sh 'docker container rm -f juice-shop'
+                sh 'docker container rm -f zap'
             }
         }
     }
