@@ -44,7 +44,7 @@ pipeline {
                 productName: 'Juice Shop', 
                 scanType: 'ZAP Scan', 
                 engagementName: 'p.sorota@sonel.pl'
-            }
+            )
         }
     }
 }
