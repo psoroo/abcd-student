@@ -24,24 +24,23 @@ pipeline {
                 sh '''
                 docker run --name zap \
                     --add-host=host.docker.internal:host-gateway \
-                    -v /home/rest2t/Pulpit/abcdevsecops/reports:/zap/wrk/reports \
                     -v /home/rest2t/Pulpit/abcdevsecops/scans:/zap/wrk/:rw \
                     -t ghcr.io/zaproxy/zaproxy:stable bash -c \
-                    "zap.sh -cmd -addonupdate && \
-                    zap.sh -cmd -addoninstall communityScripts && \
-                    zap.sh -cmd -addoninstall pscanrulesAlpha && \
-                    zap.sh -cmd -addoninstall pscanrulesBeta && \
-                    zap.sh -cmd -autorun /zap/wrk/passive_scan.yaml"
+                    "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive_scan.yaml" \
+                || true
                 '''
             }
         }
     }
     post {
         always {
+            sh 'mkdir -p results/'
+            docker cp zap:/zap/wrk/reports/zap_html_report.html ${WORKSPACE}/results/zap_html_report.html
+            docker cp zap:/zap/wrk/reports/zap_xml_report.xml ${WORKSPACE}/results/zap_xml_report.xml
             sh 'docker container rm -f juice-shop'
             sh 'docker container rm -f zap'
             defectDojoPublisher(
-                artifact: '/home/rest2t/Pulpit/abcdevsecops/reports/zap_xml_report.xml', 
+                artifact: '${WORKSPACE}/results/zap_xml_report.xml', 
                 productName: 'Juice Shop', 
                 scanType: 'ZAP Scan', 
                 engagementName: 'p.sorota@sonel.pl'
