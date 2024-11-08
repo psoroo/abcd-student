@@ -27,8 +27,11 @@ pipeline {
                     -v /home/rest2t/Pulpit/abcdevsecops/reports:/zap/wrk/reports \
                     -v /home/rest2t/Pulpit/abcdevsecops/scans:/zap/wrk/:rw \
                     -t ghcr.io/zaproxy/zaproxy:stable bash -c \
-                    "zap.sh -cmd -addonupdate; zap.sh -cmd -addoninstall communityScripts -addoninstall pscanrulesAlpha -addoninstall pscanrulesBeta -autorun /zap/wrk/passive_scan.yaml" \
-                    || true
+                    "zap.sh -cmd -addonupdate && \
+                    zap.sh -cmd -addoninstall communityScripts && \
+                    zap.sh -cmd -addoninstall pscanrulesAlpha && \
+                    zap.sh -cmd -addoninstall pscanrulesBeta && \
+                    zap.sh -cmd -autorun /zap/wrk/passive_scan.yaml"
                 '''
                 sh 'docker container rm -f juice-shop'
                 sh 'docker container rm -f zap'
