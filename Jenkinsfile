@@ -35,16 +35,15 @@ pipeline {
                 '''
             }
         }
-        post {
-            always {
-                sh 'docker container rm -f juice-shop'
-                sh 'docker container rm -f zap'
-                defectDojoPublisher(
-                    artifact: '/home/rest2t/Pulpit/abcdevsecops/reports/zap_xml_report.xml', 
-                    productName: 'Juice Shop', 
-                    scanType: 'ZAP Scan', 
-                    engagementName: 'p.sorota@sonel.pl'
-                )
+    post {
+        always {
+            sh 'docker container rm -f juice-shop'
+            sh 'docker container rm -f zap'
+            defectDojoPublisher(
+                artifact: '/home/rest2t/Pulpit/abcdevsecops/reports/zap_xml_report.xml', 
+                productName: 'Juice Shop', 
+                scanType: 'ZAP Scan', 
+                engagementName: 'p.sorota@sonel.pl'
             }
         }
     }
