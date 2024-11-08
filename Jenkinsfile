@@ -35,6 +35,7 @@ pipeline {
                 '''
             }
         }
+    }
     post {
         always {
             sh 'docker container rm -f juice-shop'
