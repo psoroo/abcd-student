@@ -12,21 +12,21 @@ pipeline {
                 }
             }
         }
-        stage('SCV Scan') {
+        stage('Secret Scan') {
             steps {
                 sh 'mkdir -p results'
-                sh 'osv-scanner --lockfile package-lock.json --format sarif --output results/osv_scanner-report.sarif || true'
+                sh 'trufflehog git file://. -j > results/trufflehog.json'
         
             }
         }
     }
     post {
         always {
-            archiveArtifacts artifacts: 'results/osv_scanner-report.sarif', fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: 'results/trufflehog.json', fingerprint: true, allowEmptyArchive: true
             defectDojoPublisher(
-                artifact: 'results/osv_scanner-report.sarif', 
+                artifact: 'results/trufflehog.json', 
                 productName: 'Juice Shop', 
-                scanType: 'SARIF', 
+                scanType: 'Trufflehog Scan', 
                 engagementName: 'p.sorota@sonel.pl'
             )
         }
