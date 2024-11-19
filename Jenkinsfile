@@ -13,7 +13,10 @@ pipeline {
             }
         }
         stage('SCV Scan') {
-            sh 'osv-scanner --lockfile package-lock.json --format sarif --output osv_scanner-report.sarif'
+            steps {
+                sh 'osv-scanner --lockfile package-lock.json --format sarif --output osv_scanner-report.sarif'
+        
+            }
         }
     }
     post {
