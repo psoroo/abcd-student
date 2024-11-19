@@ -14,17 +14,19 @@ pipeline {
         }
         stage('SCV Scan') {
             steps {
-                sh 'osv-scanner --lockfile package-lock.json --format sarif --output osv_scanner-report.sarif'
+                sh 'mkdir -p results'
+                sh 'osv-scanner --lockfile package-lock.json --format sarif --output results/osv_scanner-report.sarif || true'
         
             }
         }
     }
     post {
         always {
+            archiveArtifacts artifacts: 'results/osv_scanner-report.sarif', fingerprint: true, allowEmptyArchive: true
             defectDojoPublisher(
-                artifact: '${WORKSPACE}/osv_scanner-report.sarif', 
+                artifact: 'results/osv_scanner-report.sarif', 
                 productName: 'Juice Shop', 
-                scanType: 'OSV Scanner Scan', 
+                scanType: 'OSV Scan', 
                 engagementName: 'p.sorota@sonel.pl'
             )
         }
