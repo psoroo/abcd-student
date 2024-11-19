@@ -12,21 +12,21 @@ pipeline {
                 }
             }
         }
-        stage('Secret Scan') {
+        stage('Semgrep Scan') {
             steps {
                 sh 'mkdir -p results'
-                sh 'trufflehog git file://. -j > results/trufflehog.json'
+                sh 'semgrep scan --config auto . --json --output results/semgrep.json'
         
             }
         }
     }
     post {
         always {
-            archiveArtifacts artifacts: 'results/trufflehog.json', fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: 'results/semgrep.json', fingerprint: true, allowEmptyArchive: true
             defectDojoPublisher(
-                artifact: 'results/trufflehog.json', 
+                artifact: 'results/semgrep.json', 
                 productName: 'Juice Shop', 
-                scanType: 'Trufflehog Scan', 
+                scanType: 'Semgrep JSON Report', 
                 engagementName: 'p.sorota@sonel.pl'
             )
         }
