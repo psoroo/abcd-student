@@ -26,7 +26,7 @@ pipeline {
             defectDojoPublisher(
                 artifact: 'results/osv_scanner-report.sarif', 
                 productName: 'Juice Shop', 
-                scanType: 'OSV Scan', 
+                scanType: 'SARIF', 
                 engagementName: 'p.sorota@sonel.pl'
             )
         }
